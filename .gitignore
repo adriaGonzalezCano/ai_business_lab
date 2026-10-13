@@ -1,0 +1,20 @@
+# Runtime data: database, owner token, backups. Never commit these.
+data/*
+!data/.gitkeep
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+owner_token
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
