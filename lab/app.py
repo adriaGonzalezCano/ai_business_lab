@@ -66,8 +66,13 @@ def build_services(config: Config, providers: dict[str, Provider] | None = None,
     research = Research(db, settings, agents, gateway, ideas, audit, fetcher)
     queue = JobQueue(db, audit)
 
+    def run_research(p: dict[str, Any]) -> dict[str, Any]:
+        if hasattr(fetcher, "delay"):  # owner edits to the politeness delay apply without a restart
+            fetcher.delay = float(settings.get("research_fetch_delay_seconds"))
+        return research.run_topic(p["topic"], list(p.get("urls", [])))
+
     handlers = {
-        JOB_RESEARCH: lambda p: research.run_topic(p["topic"], list(p.get("urls", []))),
+        JOB_RESEARCH: run_research,
         JOB_COMMITTEE: lambda p: committee.run(p["idea_id"], actor=p.get("actor", "owner")),
     }
     worker = Worker(queue, handlers, costs, settings, audit, backoff_base_seconds=backoff_base_seconds)

@@ -19,7 +19,7 @@ Read this first when resuming ("continue"). Update it at the end of every work s
 | Backend domain modules (`lab/*.py`) | done, import cleanly |
 | `lab/app.py` (composition root), `lab/api.py`, `lab/server.py` | done |
 | Tests: ideas, rules/committee, costs | done, passing |
-| Tests: jobs/restart, research, API security/flow, reports | in progress |
+| Tests: jobs/restart, research, API security/flow, reports | done (123 passing) |
 | UI (`ui/`) | not started |
 | README / DATA_MODEL / SECURITY / .env.example | not started |
 
@@ -32,7 +32,7 @@ Read this first when resuming ("continue"). Update it at the end of every work s
 
 ## Next actions
 
-1. Tests: jobs (idempotency, retry, recovery), research (verification, injection, scout citations), API security, report.
+1. (done) Backend tests: 123 passing.
 2. Build `ui/` (index.html, app.js, styles.css) served by `lab/api.py`; every control wired to `/api`.
 3. Write README, `.env.example`, DATA_MODEL, SECURITY; finish COST_MODEL accuracy check.
 4. Correct ROADMAP checkboxes to match reality (M1.7 UI is not done until `ui/` exists).

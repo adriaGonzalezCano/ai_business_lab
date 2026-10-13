@@ -47,6 +47,18 @@ class JobQueue:
                 (jid, kind, dumps(payload or {}), idempotency_key, max_attempts, run_after, now_iso(), now_iso()))
         return jid
 
+    def enqueue_unless_pending(self, kind: str, payload: dict[str, Any], max_attempts: int = 3) -> tuple[str, bool]:
+        """Owner-triggered work: a double click must not pay for the same job twice.
+
+        Returns (job_id, created). If an identical job is still queued or running, that job is returned."""
+        body = dumps(payload)
+        with self.db.tx():
+            row = self.db.one("SELECT id FROM jobs WHERE kind=? AND payload_json=? AND status IN ('queued','running')",
+                              (kind, body))
+            if row:
+                return row["id"], False
+            return self.enqueue(kind, payload, max_attempts=max_attempts), True
+
     def claim_next(self, kinds: set[str] | None = None) -> dict[str, Any] | None:
         with self.db.tx():
             rows = self.db.query("SELECT * FROM jobs WHERE status='queued' AND run_after<=? ORDER BY run_after, created_at",

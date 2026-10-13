@@ -255,9 +255,10 @@ def create_app(svc: Services) -> Starlette:
         if not isinstance(urls, list) or not urls or len(urls) > 10 or not all(
                 isinstance(u, str) and u.startswith(("http://", "https://")) for u in urls):
             raise ValueError("urls must be a list of 1-10 http(s) URLs")
-        jid = c.svc.queue.enqueue(JOB_RESEARCH, {"topic": topic, "urls": urls})
-        c.svc.audit.log("owner", "research_requested", "job", jid, {"topic": topic, "urls": urls})
-        return {"job": c.svc.queue.get(jid)}
+        jid, created = c.svc.queue.enqueue_unless_pending(JOB_RESEARCH, {"topic": topic, "urls": urls})
+        if created:
+            c.svc.audit.log("owner", "research_requested", "job", jid, {"topic": topic, "urls": urls})
+        return {"job": c.svc.queue.get(jid), "already_pending": not created}
 
     # ideas ------------------------------------------------------------------
     def ideas_list(c: Ctx):
@@ -293,9 +294,10 @@ def create_app(svc: Services) -> Starlette:
             raise CommitteeError(f"idea is {idea['status']}; reopen it before re-evaluating")
         if c.svc.costs.is_exhausted():
             raise BudgetExceeded("total", "The monthly AI budget is used up; new evaluations are blocked.")
-        jid = c.svc.queue.enqueue(JOB_COMMITTEE, {"idea_id": iid, "actor": "owner"})
-        c.svc.audit.log("owner", "evaluation_requested", "idea", iid, {"job": jid})
-        return {"job": c.svc.queue.get(jid)}
+        jid, created = c.svc.queue.enqueue_unless_pending(JOB_COMMITTEE, {"idea_id": iid, "actor": "owner"})
+        if created:
+            c.svc.audit.log("owner", "evaluation_requested", "idea", iid, {"job": jid})
+        return {"job": c.svc.queue.get(jid), "already_pending": not created}
 
     def idea_decision(c: Ctx):
         b = c.obj()
@@ -347,12 +349,18 @@ def create_app(svc: Services) -> Starlette:
         return {"events": c.svc.audit.recent(c.qint("limit", 100), c.query.get("entity"), c.query.get("entity_id"))}
 
     # ------------------------------------------------------------------ UI files
+    def ui_file(name: str, media: str) -> Response:
+        path = UI_DIR / name
+        if not path.is_file():
+            return _error(404, "not_found", f"UI file missing: ui/{name}")
+        return FileResponse(path, media_type=media, headers=SECURITY_HEADERS)
+
     async def index(request: Request) -> Response:
-        return FileResponse(UI_DIR / "index.html", headers=SECURITY_HEADERS)
+        return ui_file("index.html", "text/html; charset=utf-8")
 
     def static(name: str, media: str):
         async def h(request: Request) -> Response:
-            return FileResponse(UI_DIR / name, media_type=media, headers=SECURITY_HEADERS)
+            return ui_file(name, media)
         return h
 
     R = lambda path, fn, methods, **kw: Route(path, endpoint(fn, **kw), methods=methods)  # noqa: E731
