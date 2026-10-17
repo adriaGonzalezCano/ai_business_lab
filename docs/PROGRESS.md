@@ -20,7 +20,7 @@ Read this first when resuming ("continue"). Update it at the end of every work s
 | `lab/app.py` (composition root), `lab/api.py`, `lab/server.py` | done |
 | Tests: ideas, rules/committee, costs | done, passing |
 | Tests: jobs/restart, research, API security/flow, reports | done (123 passing) |
-| UI (`ui/`) | shell and styles done (U0); views U1 to U10 pending, see TASKS.md |
+| UI (`ui/`) | shell, styles and core done (U0, U1); views U2 to U10 pending, see TASKS.md |
 | README / DATA_MODEL / SECURITY / .env.example | not started (D1 to D3 in TASKS.md) |
 
 ## Decisions and findings
@@ -42,3 +42,4 @@ that, run the tests, tick it, add a line to the log below, commit.
 ## Session log
 
 - 2026-10-17: split remaining work into chunks (`docs/TASKS.md`). U0 done. 123 tests passing. Pushes still refused (GitHub App not installed).
+- 2026-10-17: pushed 3 commits (GitHub link works now). U1 done: core.js, main.js, view placeholders. Verified in headless Chromium (sign-in, routing, spend meter, mobile rail); fixed top-bar overflow at 360px. Next: U2 (overview and floor plan).

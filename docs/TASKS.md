@@ -16,7 +16,7 @@ Conventions for all UI chunks: build DOM with `Lab.h()` and `textContent` only (
 status shown as words plus colour; every button calls a real API route; every list has an empty state that says what to do.
 
 - [x] **U0 Shell and styles**: `ui/index.html`, `ui/styles.css`, safe static-file route in `lab/api.py`. (done, committed)
-- [ ] **U1 Core** (`ui/core.js`, `ui/main.js`): `Lab.h`/`Lab.svg` helpers, `Lab.api()` with bearer token in sessionStorage,
+- [x] **U1 Core** (`ui/core.js`, `ui/main.js`): `Lab.h`/`Lab.svg` helpers, `Lab.api()` with bearer token in sessionStorage,
       login screen, hash router, room rail, top-bar AI-spend meter, toasts, dialog helper, polling helper.
       Check: with the server running, signing in with a wrong token shows an error, the right one shows the shell; routes
       without a view show a clear "not built" message.
