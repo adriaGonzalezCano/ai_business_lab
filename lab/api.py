@@ -10,6 +10,7 @@ Security model
 from __future__ import annotations
 
 import hmac
+import re
 import time
 from collections import defaultdict, deque
 from contextlib import asynccontextmanager
@@ -358,15 +359,16 @@ def create_app(svc: Services) -> Starlette:
     async def index(request: Request) -> Response:
         return ui_file("index.html", "text/html; charset=utf-8")
 
-    def static(name: str, media: str):
-        async def h(request: Request) -> Response:
-            return ui_file(name, media)
-        return h
+    async def static_asset(request: Request) -> Response:
+        """Serve ui/<name>.js|.css. The pattern admits only plain file names, so no path can escape ui/."""
+        name = request.path_params["name"]
+        if not re.fullmatch(r"[a-z0-9_-]+\.(js|css)", name):
+            return _error(404, "not_found", "Not found.")
+        return ui_file(name, "text/javascript; charset=utf-8" if name.endswith(".js") else "text/css; charset=utf-8")
 
     R = lambda path, fn, methods, **kw: Route(path, endpoint(fn, **kw), methods=methods)  # noqa: E731
     routes = [
-        Route("/", index), Route("/app.js", static("app.js", "text/javascript")),
-        Route("/styles.css", static("styles.css", "text/css")),
+        Route("/", index),
         R("/api/health", health, ["GET"], public=True),
         R("/api/overview", overview, ["GET"]),
         R("/api/settings", settings_get, ["GET"]), R("/api/settings", settings_put, ["PUT"]),
@@ -392,6 +394,7 @@ def create_app(svc: Services) -> Starlette:
         R("/api/alerts", alerts_list, ["GET"]), R("/api/alerts/{alert_id:int}/ack", alert_ack, ["POST"]),
         R("/api/report", report, ["GET"]), R("/api/integrations", integrations, ["GET"]),
         R("/api/audit", audit_list, ["GET"]),
+        Route("/{name}", static_asset),  # last: /api/* routes above take precedence
     ]
 
     @asynccontextmanager

@@ -20,8 +20,8 @@ Read this first when resuming ("continue"). Update it at the end of every work s
 | `lab/app.py` (composition root), `lab/api.py`, `lab/server.py` | done |
 | Tests: ideas, rules/committee, costs | done, passing |
 | Tests: jobs/restart, research, API security/flow, reports | done (123 passing) |
-| UI (`ui/`) | not started |
-| README / DATA_MODEL / SECURITY / .env.example | not started |
+| UI (`ui/`) | shell and styles done (U0); views U1 to U10 pending, see TASKS.md |
+| README / DATA_MODEL / SECURITY / .env.example | not started (D1 to D3 in TASKS.md) |
 
 ## Decisions and findings
 
@@ -32,12 +32,13 @@ Read this first when resuming ("continue"). Update it at the end of every work s
 
 ## Next actions
 
-1. (done) Backend tests: 123 passing.
-2. Build `ui/` (index.html, app.js, styles.css) served by `lab/api.py`; every control wired to `/api`.
-3. Write README, `.env.example`, DATA_MODEL, SECURITY; finish COST_MODEL accuracy check.
-4. Correct ROADMAP checkboxes to match reality (M1.7 UI is not done until `ui/` exists).
-5. Commit; push may be refused (see below).
+Work is split into small chunks in `docs/TASKS.md` (one chunk fits a short session). Take the first unchecked chunk, do only
+that, run the tests, tick it, add a line to the log below, commit.
 
 ## Git
 
 - Local commits are made in `/home/claude/ai_business_lab`. Earlier pushes from the cloud session were refused because the Claude GitHub App was not installed for the repo. If a push fails, tell the owner; do not work around it.
+
+## Session log
+
+- 2026-10-17: split remaining work into chunks (`docs/TASKS.md`). U0 done. 123 tests passing. Pushes still refused (GitHub App not installed).

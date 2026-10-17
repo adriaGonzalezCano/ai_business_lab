@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>AI Business Lab</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<a class="skip" href="#view">Skip to content</a>
+
+<section id="login" hidden aria-labelledby="login-title">
+  <form id="login-form" autocomplete="off">
+    <h1 id="login-title">AI Business Lab</h1>
+    <p>Sign in with the owner token. It is stored in the file <code>data/owner_token</code> on the machine running the lab, or in the <code>LAB_OWNER_TOKEN</code> variable if you set one.</p>
+    <label for="token-input">Owner token</label>
+    <input id="token-input" type="password" required autocomplete="off" spellcheck="false">
+    <p id="login-error" class="form-error" role="alert" hidden></p>
+    <button type="submit" class="primary">Sign in</button>
+  </form>
+</section>
+
+<div id="shell" hidden>
+  <header id="topbar">
+    <button id="nav-toggle" type="button" aria-expanded="false" aria-controls="rail">Rooms</button>
+    <a class="brand" href="#/">AI Business Lab</a>
+    <div id="meter-slot" class="meter-slot"></div>
+    <button id="logout" type="button">Sign out</button>
+  </header>
+  <nav id="rail" aria-label="Rooms"></nav>
+  <main id="view" tabindex="-1" aria-live="polite"></main>
+</div>
+
+<div id="toasts" role="status" aria-live="polite"></div>
+<dialog id="dialog"></dialog>
+<script src="/core.js"></script>
+<script src="/view-overview.js"></script>
+<script src="/view-research.js"></script>
+<script src="/view-ideas.js"></script>
+<script src="/view-idea-detail.js"></script>
+<script src="/view-committee.js"></script>
+<script src="/view-analytics.js"></script>
+<script src="/view-control.js"></script>
+<script src="/view-control-more.js"></script>
+<script src="/main.js"></script>
+</body>
+</html>
